@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>谱间 · 专注每一段音乐</title>
+  <link rel="stylesheet" href="reader.css">
+  <script type="module" src="reader.mjs"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="谱间首页"><span class="brand-icon">♩</span><span>谱间<small>SCORE &amp; FLOW</small></span></a>
+    <div class="document-title"><span id="docName">把双手留给音乐</span><span id="docMeta">本地 PDF 乐谱阅读器</span></div>
+    <button id="openButton" class="button">＋ 导入 PDF</button><input id="file" type="file" accept="application/pdf,.pdf" hidden>
+  </header>
+  <main>
+    <aside class="sidebar">
+      <div class="section-kicker">阅读设置</div>
+      <h2>跟着你的节奏</h2>
+      <p class="muted">从容翻阅，专注每一段音乐。</p>
+      <button id="startPerformance" class="primary wide" disabled>▶ 开始演奏</button>
+      <p class="muted small">开始演奏会自动开启鼠标左右键翻页。按 Esc 返回，右上角开关可单独控制鼠标翻页。</p>
+      <label class="field-label" for="mode">每次前进</label>
+      <select id="mode" disabled><option value="page">逐页</option><option value="row">逐行 · 左右手为一行</option><option value="two">逐两行</option></select>
+      <div class="separator"></div>
+      <label class="field-label" for="delay">防连击间隔 <span id="delayValue">350 ms</span></label>
+      <input type="range" id="delay" min="100" max="1000" step="50" value="350">
+      <p class="muted small">短时间重复点击只记一次。</p>
+      <button id="editButton" class="button wide" disabled>调整裁边与翻页节点</button>
+      <button id="fullscreen" class="button wide" disabled>⛶ 全屏阅读</button>
+      <div class="tip"><span>演奏小贴士</span><p>鼠标开关：左键前进 · 右键回退<br>演奏中：空格 / → 前进 · ← 回退<br>Esc 返回设置，鼠标开关保持原状</p></div>
+      <div class="privacy">◉ 乐谱仅保存在此浏览器</div>
+      <button id="forget" class="text-button" disabled>清除此谱的本地记录</button>
+    </aside>
+    <section class="workspace">
+      <div class="reader-toolbar">
+        <div class="status-pill" id="stateLabel">准备开始</div>
+        <label class="reference-toggle" title="逐行或逐两行模式下，显示上一行缩略图；关闭后只显示当前及后续谱行。"><input type="checkbox" id="overlap" checked disabled> 衔接参考</label>
+        <div class="perform-control"><span id="switchText">鼠标左右键翻页已关闭</span><button id="perform" role="switch" aria-checked="false" aria-label="鼠标左右键翻页开关" disabled><span></span></button></div>
+      </div>
+      <div id="stage" tabindex="0" aria-label="乐谱阅读区域">
+        <div id="welcome">
+          <div class="score-symbol">𝄞</div>
+          <div class="section-kicker">YOUR SCORE. YOUR TEMPO.</div>
+          <h1>把双手留给音乐。</h1>
+          <p>导入一份钢琴谱，按你的节奏从容翻阅。<br>自动找到谱行，也能按你的习惯微调。</p>
+          <button id="welcomeOpen" class="primary">选择 PDF 乐谱 <span>↗</span></button>
+          <div class="welcome-note">支持文字版与扫描版 PDF · 无需联网</div>
+          <div class="steps"><span><b>01</b> 导入乐谱</span><span><b>02</b> 检查节点</span><span><b>03</b> 开始弹奏</span></div>
+        </div>
+        <canvas id="score" hidden aria-label="当前乐谱"></canvas>
+        <div id="loading" hidden><span class="spinner"></span><p id="loadingText">正在读取乐谱…</p></div>
+      </div>
+      <footer class="reader-footer"><span id="position">等待导入乐谱</span><div><button id="prev" class="button" disabled aria-label="上一段">←</button><button id="next" class="button" disabled aria-label="下一段">下一段 →</button></div><span id="saveState">离线可用</span></footer>
+      <div id="notice" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+  <dialog id="editor">
+    <div class="editor-header"><div><div class="section-kicker">让翻页刚刚好</div><h2>裁边与翻页节点</h2></div><button id="closeEdit" class="primary">保存并返回</button></div>
+    <div class="editor-actions"><button id="editPrev" class="button">←</button><span id="editPageLabel"></span><button id="editNext" class="button">→</button><button id="addCut" class="button">＋ 添加节点</button><button id="undo" class="button">撤销</button><button id="resetCrop" class="button">保留整页</button><button id="reanalyze" class="button">重新识别此页</button></div>
+    <p class="editor-help">绿色虚线是翻页节点，拖动调整，点 × 删除；四周金色线控制裁边。钢琴左右手应放在同一段。识别只提供建议，请保留力度、速度和踏板标记。</p>
+    <div class="editor-scroll"><div id="editSheet"><canvas id="editCanvas"></canvas><div id="handles"></div></div></div>
+    <div class="editor-bottom"><span id="recognition"></span><span>改动在关闭面板时保存 · 原始 PDF 不变</span></div>
+  </dialog>
+</body>
+</html>
